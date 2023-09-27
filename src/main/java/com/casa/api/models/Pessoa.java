@@ -2,12 +2,11 @@ package com.casa.api.models;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,9 +29,8 @@ public class Pessoa implements Serializable {
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	private LocalDate dataNascimento;
 
-	@JsonProperty(access = Access.READ_ONLY)
 	@OneToMany(mappedBy = "pessoa")
-	private List<Endereco> enderecos;
+	private List<Endereco> enderecos = new ArrayList<>();
 
 	public Pessoa() {
 		super();

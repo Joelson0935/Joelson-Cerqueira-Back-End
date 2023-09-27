@@ -3,6 +3,9 @@ package com.casa.api.models;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,9 +20,11 @@ public class Endereco implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	private Boolean principal;
+	@JsonProperty(access = Access.WRITE_ONLY)
 	@ManyToOne
 	private Pessoa pessoa;
+
+	private Boolean principal;
 
 	private String logradouro;
 
@@ -31,15 +36,14 @@ public class Endereco implements Serializable {
 
 	public Endereco() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
-	public Endereco(Integer id, Boolean principal, Pessoa pessoa, String logradouro, String cep, String numero,
+	public Endereco(Integer id, Pessoa pessoa, Boolean principal, String logradouro, String cep, String numero,
 			String cidade) {
 		super();
 		this.id = id;
-		this.principal = principal;
 		this.pessoa = pessoa;
+		this.principal = principal;
 		this.logradouro = logradouro;
 		this.cep = cep;
 		this.numero = numero;
@@ -54,20 +58,20 @@ public class Endereco implements Serializable {
 		this.id = id;
 	}
 
-	public Boolean getPrincipal() {
-		return principal;
-	}
-
-	public void setPrincipal(Boolean principal) {
-		this.principal = principal;
-	}
-
 	public Pessoa getPessoa() {
 		return pessoa;
 	}
 
 	public void setPessoa(Pessoa pessoa) {
 		this.pessoa = pessoa;
+	}
+
+	public Boolean getPrincipal() {
+		return principal;
+	}
+
+	public void setPrincipal(Boolean principal) {
+		this.principal = principal;
 	}
 
 	public String getLogradouro() {

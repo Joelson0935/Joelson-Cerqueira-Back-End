@@ -1,48 +1,47 @@
 package com.casa.api.models.dtos;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.casa.api.models.Endereco;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Size;
 
-public class PessoaDto {
+public class PessoaDto implements Serializable {
+	private static final long serialVersionUID = 1L;
 
-	private Long id;
+	private Integer id;
 
 	@Size(min = 3, message = "nome precisa ter ao menos {min} caracteres")
 	private String nome;
-
+	
 	@JsonFormat(pattern = "dd/MM/yyyy")
-	private LocalDate data_De_Nascimento;
+	private LocalDate dataNascimento;
 
-	@JsonProperty(access = Access.READ_ONLY)
-	@OneToMany(mappedBy = "pessoa")
+	@OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE })
 	private List<Endereco> enderecos = new ArrayList<>();
 
 	public PessoaDto() {
 		super();
 	}
 
-	public PessoaDto(Long id, @Size(min = 3, message = "nome precisa ter ao menos {min} caracteres") String nome,
-			LocalDate data_De_Nascimento) {
+	public PessoaDto(Integer id, String nome, LocalDate dataNascimento) {
 		super();
 		this.id = id;
 		this.nome = nome;
-		this.data_De_Nascimento = data_De_Nascimento;
+		this.dataNascimento = dataNascimento;
 	}
 
-	public Long getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -54,12 +53,12 @@ public class PessoaDto {
 		this.nome = nome;
 	}
 
-	public LocalDate getData_De_Nascimento() {
-		return data_De_Nascimento;
+	public LocalDate getDataNascimento() {
+		return dataNascimento;
 	}
 
-	public void setData_De_Nascimento(LocalDate data_De_Nascimento) {
-		this.data_De_Nascimento = data_De_Nascimento;
+	public void setDataNascimento(LocalDate data_De_Nascimento) {
+		this.dataNascimento = data_De_Nascimento;
 	}
 
 	public List<Endereco> getEnderecos() {
