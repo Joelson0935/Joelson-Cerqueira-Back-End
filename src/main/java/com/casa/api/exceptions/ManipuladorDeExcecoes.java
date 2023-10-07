@@ -1,6 +1,7 @@
 package com.casa.api.exceptions;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class ManipuladorDeExcecoes {
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<Erro> naoPermitido(MethodArgumentNotValidException e, HttpServletRequest request) {
+	public ResponseEntity<Erro> argumentoInvalido(MethodArgumentNotValidException e, HttpServletRequest request) {
 		Erro erro = new Erro("Argumento inválido!", HttpStatus.BAD_REQUEST.value(), LocalDate.now(),
 				request.getRequestURI());
 
@@ -30,9 +31,15 @@ public class ManipuladorDeExcecoes {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
 	}
 
-	@ExceptionHandler(IllegalArgumentException.class)
-	public ResponseEntity<Erro> argumentoInvalido(IllegalArgumentException e, HttpServletRequest request) {
+	@ExceptionHandler(EnderecoException.class)
+	public ResponseEntity<Erro> enderecoInvalido(EnderecoException e, HttpServletRequest request) {
 		Erro erro = new Erro(e.getMessage(), HttpStatus.BAD_REQUEST.value(), LocalDate.now(), request.getRequestURI());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
+	}
+
+	@ExceptionHandler(DateTimeParseException.class)
+	public ResponseEntity<Erro> enderecoInvalido(DateTimeParseException e, HttpServletRequest request) {
+		Erro erro = new Erro("Data fora do seguinte padrão: 10/05/2005", HttpStatus.BAD_REQUEST.value(), LocalDate.now(), request.getRequestURI());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
 	}
 

@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 
 public class PessoaDto implements Serializable {
@@ -19,8 +20,9 @@ public class PessoaDto implements Serializable {
 
 	@Size(min = 3, message = "nome precisa ter ao menos {min} caracteres")
 	private String nome;
-	
+
 	@JsonFormat(pattern = "dd/MM/yyyy")
+	@PastOrPresent(message = "data inválida.")
 	private LocalDate dataNascimento;
 
 	@OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE })
