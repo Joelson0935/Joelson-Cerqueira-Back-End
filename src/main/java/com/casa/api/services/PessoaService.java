@@ -11,7 +11,7 @@ public interface PessoaService {
 
 	PessoaDto editarPessoa(Integer id, PessoaDto pessoa);
 
-	PessoaDto consultarPessoa(Integer id);
+	PessoaDto consultarPessoaPorId(Integer id);
 
 	List<PessoaDto> listarPessoas();
 

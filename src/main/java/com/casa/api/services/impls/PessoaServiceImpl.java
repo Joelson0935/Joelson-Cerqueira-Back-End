@@ -28,7 +28,7 @@ public class PessoaServiceImpl implements PessoaService {
 
 	@Override
 	public PessoaDto editarPessoa(Integer id, PessoaDto pessoa) {
-		PessoaDto pessoaEncontrada = consultarPessoa(id);
+		PessoaDto pessoaEncontrada = consultarPessoaPorId(id);
 		if (pessoa.getNome() != null) {
 			pessoaEncontrada.setNome(pessoa.getNome());
 		}
@@ -46,30 +46,11 @@ public class PessoaServiceImpl implements PessoaService {
 	}
 
 	@Override
-	public PessoaDto consultarPessoa(Integer id) {
+	public PessoaDto consultarPessoaPorId(Integer id) {
 		Pessoa pessoaEncontrada = buscarPorId(id);
 		PessoaDto dto = new PessoaDto();
 		BeanUtils.copyProperties(pessoaEncontrada, dto);
 		return dto;
-	}
-
-	protected Pessoa buscarPorId(Integer id) {
-		Pessoa pessoa = pessoaRepository.findById(id)
-				.orElseThrow(() -> new ObjetoNaoEncontradoException("Pessoa não encontrada."));
-		return pessoa;
-	}
-
-	private Pessoa dtoParaEntidade(PessoaDto pessoa) {
-		Pessoa entidadePessoa = new Pessoa();
-		entidadePessoa.setId(pessoa.getId());
-		entidadePessoa.setNome(pessoa.getNome());
-		entidadePessoa.setDataNascimento(pessoa.getDataNascimento());
-		if (!pessoa.getEnderecos().isEmpty()) {
-			pessoa.getEnderecos().forEach(endereco -> {
-				entidadePessoa.getEnderecos().add(endereco);
-			});
-		}
-		return entidadePessoa;
 	}
 
 	@Override
@@ -105,6 +86,25 @@ public class PessoaServiceImpl implements PessoaService {
 			throw new ObjetoNaoEncontradoException("A lista está vazia.");
 		}
 		return endereco;
+	}
+
+	protected Pessoa buscarPorId(Integer id) {
+		Pessoa pessoa = pessoaRepository.findById(id)
+				.orElseThrow(() -> new ObjetoNaoEncontradoException("Pessoa não encontrada."));
+		return pessoa;
+	}
+
+	private Pessoa dtoParaEntidade(PessoaDto pessoa) {
+		Pessoa entidadePessoa = new Pessoa();
+		entidadePessoa.setId(pessoa.getId());
+		entidadePessoa.setNome(pessoa.getNome());
+		entidadePessoa.setDataNascimento(pessoa.getDataNascimento());
+		if (!pessoa.getEnderecos().isEmpty()) {
+			pessoa.getEnderecos().forEach(endereco -> {
+				entidadePessoa.getEnderecos().add(endereco);
+			});
+		}
+		return entidadePessoa;
 	}
 
 }

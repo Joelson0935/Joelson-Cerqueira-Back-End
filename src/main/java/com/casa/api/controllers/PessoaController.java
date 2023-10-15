@@ -39,7 +39,7 @@ public class PessoaController {
 
 	@GetMapping("/consultar/{id}")
 	public ResponseEntity<PessoaDto> consultarPessoa(@PathVariable Integer id) {
-		return ResponseEntity.status(HttpStatus.OK).body(pessoaService.consultarPessoa(id));
+		return ResponseEntity.status(HttpStatus.OK).body(pessoaService.consultarPessoaPorId(id));
 	}
 
 	@GetMapping("/listar")
