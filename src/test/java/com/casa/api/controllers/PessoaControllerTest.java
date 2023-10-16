@@ -1,8 +1,11 @@
 package com.casa.api.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -17,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.casa.api.models.Endereco;
@@ -51,21 +55,76 @@ public class PessoaControllerTest {
 	void criarPessoa() {
 		Mockito.when(service.criarPessoa(any())).thenReturn(dto);
 
-		ResponseEntity<PessoaDto> pessoaDto = controller.criarPessoa(dto);
+		ResponseEntity<PessoaDto> response = controller.criarPessoa(dto);
 
-		Assertions.assertNotNull(pessoaDto);
-		Assertions.assertEquals(ResponseEntity.class, pessoaDto.getClass());
+		Assertions.assertNotNull(response);
+		assertNotNull(response.getBody());
+		Assertions.assertEquals(ResponseEntity.class, response.getClass());
+		assertEquals(HttpStatus.CREATED, response.getStatusCode());
+	}
+
+	@Test
+	void editarPessoa() {
+		Mockito.when(service.editarPessoa(Mockito.anyInt(), any())).thenReturn(dto);
+
+		ResponseEntity<PessoaDto> response = controller.editarPessoa(dto, 1);
+
+		Assertions.assertNotNull(response);
+		assertEquals(ResponseEntity.class, response.getClass());
+		assertNotNull(response.getBody());
+		assertEquals(PessoaDto.class, response.getBody().getClass());
+		assertEquals(HttpStatus.OK, response.getStatusCode());
 	}
 
 	@Test
 	void consultarPessoa() {
 		Mockito.when(service.consultarPessoaPorId(Mockito.anyInt())).thenReturn(dto);
 
-		ResponseEntity<PessoaDto> pessoaDto = controller.consultarPessoa(1);
+		ResponseEntity<PessoaDto> response = controller.consultarPessoa(1);
 
-		Assertions.assertNotNull(pessoaDto);
-		assertEquals(ResponseEntity.class, pessoaDto.getClass());
-		assertNotNull(pessoaDto.getBody());
+		Assertions.assertNotNull(response);
+		assertEquals(ResponseEntity.class, response.getClass());
+		assertNotNull(response.getBody());
+		assertEquals(PessoaDto.class, response.getBody().getClass());
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+	}
+
+	@Test
+	void listarPessoas() {
+		when(service.listarPessoas()).thenReturn(List.of(dto));
+
+		ResponseEntity<List<PessoaDto>> responses = controller.listarPessoas();
+
+		assertNotEquals(0, responses.getBody().size());
+		assertEquals(PessoaDto.class, responses.getBody().get(0).getClass());
+		assertEquals(HttpStatus.OK, responses.getStatusCode());
+		assertEquals(ResponseEntity.class, responses.getClass());
+	}
+
+	@Test
+	void listarEnderecosDaPessoa() {
+		when(service.listarEnderecosDaPessoaPorId(anyInt())).thenReturn(List.of(endereco));
+
+		ResponseEntity<List<Endereco>> responses = controller.listarEnderecosDaPessoa(1);
+
+		assertNotEquals(0, responses.getBody().size());
+		assertEquals(Endereco.class, responses.getBody().get(0).getClass());
+		assertEquals(HttpStatus.OK, responses.getStatusCode());
+		assertEquals(ResponseEntity.class, responses.getClass());
+
+	}
+
+	@Test
+	void enderecoPrincipalDaPessoaPorId() {
+		when(service.enderecoPrincipalDaPessoaPorId(anyInt())).thenReturn(endereco);
+
+		ResponseEntity<Endereco> response = controller.enderecoPrincipalDaPessoaPorId(1);
+
+		assertNotNull(response);
+		assertEquals(Endereco.class, response.getBody().getClass());
+		assertEquals(ResponseEntity.class, response.getClass());
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+
 	}
 
 	private void instanciar() {
