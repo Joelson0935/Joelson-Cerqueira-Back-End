@@ -88,7 +88,7 @@ public class PessoaServiceImpl implements PessoaService {
 		return endereco;
 	}
 
-	protected Pessoa buscarPorId(Integer id) {
+	public Pessoa buscarPorId(Integer id) {
 		Pessoa pessoa = pessoaRepository.findById(id)
 				.orElseThrow(() -> new ObjetoNaoEncontradoException("Pessoa não encontrada."));
 		return pessoa;

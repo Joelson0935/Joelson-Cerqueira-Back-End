@@ -26,7 +26,7 @@ public class ManipuladorDeExcecoes {
 				request.getRequestURI());
 
 		e.getBindingResult().getFieldErrors().forEach(err -> {
-			erro.setCampos(err.getField(), err.getDefaultMessage());
+			erro.getCampos().add(new Campo(err.getField(), err.getDefaultMessage()));
 		});
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
 	}
@@ -38,8 +38,9 @@ public class ManipuladorDeExcecoes {
 	}
 
 	@ExceptionHandler(DateTimeParseException.class)
-	public ResponseEntity<Erro> enderecoInvalido(DateTimeParseException e, HttpServletRequest request) {
-		Erro erro = new Erro("Data fora do seguinte padrão: 10/05/2005", HttpStatus.BAD_REQUEST.value(), LocalDate.now(), request.getRequestURI());
+	public ResponseEntity<Erro> dataInvalida(DateTimeParseException e, HttpServletRequest request) {
+		Erro erro = new Erro("Data fora do seguinte padrão: 10/05/2005", HttpStatus.BAD_REQUEST.value(),
+				LocalDate.now(), request.getRequestURI());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
 	}
 

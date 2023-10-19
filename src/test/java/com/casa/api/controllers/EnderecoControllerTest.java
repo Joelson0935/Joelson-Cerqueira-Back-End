@@ -1,10 +1,7 @@
-package com.casa.api.service.impl;
+package com.casa.api.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
@@ -18,30 +15,30 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import com.casa.api.models.Endereco;
 import com.casa.api.models.Pessoa;
 import com.casa.api.models.dtos.PessoaDto;
-import com.casa.api.repositories.EnderecoRepository;
-import com.casa.api.services.impls.EnderecoServiceImpl;
-import com.casa.api.services.impls.PessoaServiceImpl;
+import com.casa.api.services.EnderecoService;
 
 @SpringBootTest
-public class EnderecoServiceImplTeste {
+public class EnderecoControllerTest {
 
 	private Pessoa pessoa;
+
 	private PessoaDto dto;
+
 	private Endereco endereco;
+
 	private List<Pessoa> pessoas;
 
 	@InjectMocks
-	private EnderecoServiceImpl enderecoService;
+	private EnderecoController controller;
 
 	@Mock
-	private PessoaServiceImpl pessoaService;
-
-	@Mock
-	private EnderecoRepository enderecoRepository;
+	private EnderecoService service;
 
 	@BeforeEach
 	void setUp() {
@@ -51,26 +48,22 @@ public class EnderecoServiceImplTeste {
 
 	@Test
 	void criarEndereco() {
-		when(pessoaService.buscarPorId(anyInt())).thenReturn(pessoa);
-		when(enderecoRepository.save(any())).thenReturn(endereco);
+		when(service.criarEndereco(endereco)).thenReturn(endereco);
 
-		Endereco enderecoMockado = enderecoService.criarEndereco(endereco);
+		ResponseEntity<Endereco> response = controller.criarEndereco(endereco);
 
-		assertNotNull(enderecoMockado);
-		assertEquals(Endereco.class, enderecoMockado.getClass());
-		assertEquals(1, endereco.getId());
-		assertEquals(Pessoa.class, enderecoMockado.getPessoa().getClass());
-		assertEquals(false, enderecoMockado.getPrincipal());
-		assertNotEquals("rua maranhão", enderecoMockado.getLogradouro());
-		assertNotEquals("rio das ostras", enderecoMockado.getCidade());
-		assertNotEquals("28890058", enderecoMockado.getCep());
+		assertNotNull(response);
+		assertNotNull(response.getBody());
+		assertEquals(ResponseEntity.class, response.getClass());
+		assertEquals(HttpStatus.CREATED, response.getStatusCode());
+		assertEquals(Endereco.class, response.getBody().getClass());
 	}
 
 	private void instanciar() {
 		pessoas = new ArrayList<>();
 		pessoa = new Pessoa(1, "Joelson", LocalDate.parse("14/05/1989", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		dto = new PessoaDto(1, "Joelson", LocalDate.parse("14/05/1989", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-		endereco = new Endereco(1, pessoa, false, "rua pernanbuco", "28891051", "219", "rio das pedras");
+		endereco = new Endereco(1, pessoa, true, "rua maranhão", "28890058", "219", "rio das ostras");
 		pessoa.getEnderecos().add(endereco);
 		dto.getEnderecos().add(endereco);
 		pessoas.add(pessoa);
